@@ -14,14 +14,14 @@ def mnist(PATH,train=True):
     if train:
         train_images=np.concatenate([np.load(i)['images'] for i in train_paths],axis=0)
         train_labels=np.concatenate([np.load(i)['labels'] for i in train_paths],axis=0)
-        train = [train_images,train_labels]
-        return train
+        train_ = [train_images,train_labels]
+        return train_
     
     else: 
         test_images=np.concatenate([np.load(i)['images'] for i in test_paths],axis=0)
         test_labels=np.concatenate([np.load(i)['labels'] for i in test_paths],axis=0)
-        test = [test_images,test_labels]
-        return test
+        test_ = [test_images,test_labels]
+        return test_
 
 class Dataset_mnist():
     def __init__(self,data):
