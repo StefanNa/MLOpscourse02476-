@@ -59,7 +59,7 @@ class TrainOREvaluate(object):
     def train(self):
         print("Training day and night")
         parser = argparse.ArgumentParser(description='Training arguments')
-        parser.add_argument("--c",'-checkpoint',type=str, default='../../model/processed/corruptmnist/',help="checkpoint directory")
+        parser.add_argument("--c",'-checkpoint',type=str, default='../../models/processed/corruptmnist/',help="checkpoint directory")
         parser.add_argument("--cname",'-checkpoint_filename',type=str, default='checkpoint.pth',help="checkpoint filename -- checkpoint.pth")
         parser.add_argument("--lr", type=float, default=0.01, help="learning rate")
         parser.add_argument("--e", type=int, default=10, help="epoch")
@@ -150,12 +150,12 @@ class TrainOREvaluate(object):
                     accuracy=correct.type(torch.FloatTensor).mean()
                     accuracies.append(accuracy.item()*100)
                 print(f'Accuracy: {np.mean(accuracies)}%')
-        saveplot(train_losses,PATH='../../reports/figures')
+        saveplot(train_losses,PATH='../../reports/figures/')
         
     def evaluate(self):
         print("Evaluating until hitting the ceiling")
         parser = argparse.ArgumentParser(description='Training arguments')
-        parser.add_argument('model_directory', default="../../model/processed/corruptmnist/")
+        parser.add_argument('model_directory', default="../../models/processed/corruptmnist/")
         parser.add_argument('model_filename', default="checkpoint.pth")
         parser.add_argument("--PATH_IMG",type=str, default='../../data/processed/corruptmnist/train_images.pt',help="path to images")
         parser.add_argument("--PATH_LAB", type=str, default='../../data/processed/corruptmnist/train_labels.pt', help="Path to labels")
@@ -185,7 +185,7 @@ class TrainOREvaluate(object):
             # set model to evaluation mode
             model.eval()
         accuracies=[]
-
+        
         for images, labels in testloader:
             log_ps = model(images)
             ps = torch.exp(log_ps)
@@ -201,4 +201,4 @@ if __name__ == '__main__':
     TrainOREvaluate()
     #python3 train_model.py train --lr=0.003
 
-    #python3 train_model.py evaluate --PATH_IMG=../../data/processed/corruptmnist/test_images.pt --PATH_LAB=../../data/processed/corruptmnist/test_labels.pt ../../model/processed/corruptmnist/ checkpoint.pth 
+    #python3 train_model.py evaluate --PATH_IMG=../../data/processed/corruptmnist/test_images.pt --PATH_LAB=../../data/processed/corruptmnist/test_labels.pt ../../models/processed/corruptmnist/ checkpoint.pth 

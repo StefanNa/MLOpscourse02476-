@@ -7,11 +7,19 @@ apt clean && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt requirements.txt
 COPY setup.py setup.py
-COPY src/ src/
-COPY data/ data/
-
-WORKDIR /
 RUN pip install -r requirements.txt --no-cache-dir
 
-ENTRYPOINT ["python", "-u", "src/models/train_model.py"]
+
+COPY req.txt req.txt
+RUN pip install -r req.txt --no-cache-dir
+
+
+COPY src/ src/
+COPY data/ data/
+COPY reports/ reports/
+WORKDIR /
+RUN mkdir /models
+
+
+ENTRYPOINT ["python", "-u", "src/models/predict_model.py"]
 
