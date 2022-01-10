@@ -21,5 +21,5 @@ WORKDIR /
 RUN mkdir /models
 
 
-ENTRYPOINT ["python", "-u", "src/models/predict_model.py"]
+         
 
