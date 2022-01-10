@@ -59,14 +59,14 @@ class TrainOREvaluate(object):
     def train(self):
         print("Training day and night")
         parser = argparse.ArgumentParser(description='Training arguments')
-        parser.add_argument("--c",'-checkpoint',type=str, default='../../models/processed/corruptmnist/',help="checkpoint directory")
+        parser.add_argument("--c",'-checkpoint',type=str, default='models/processed/corruptmnist/',help="checkpoint directory")
         parser.add_argument("--cname",'-checkpoint_filename',type=str, default='checkpoint.pth',help="checkpoint filename -- checkpoint.pth")
         parser.add_argument("--lr", type=float, default=0.01, help="learning rate")
         parser.add_argument("--e", type=int, default=10, help="epoch")
         parser.add_argument("--b", type=_power_of_2, default=64, help="batch size")
         parser.add_argument("--cont", type=str, default=None, help="Path to model that should be trained again")
-        parser.add_argument("--PATH_IMG",type=str, default='../../data/processed/corruptmnist/train_images.pt',help="path to images")
-        parser.add_argument("--PATH_LAB", type=str, default='../../data/processed/corruptmnist/train_labels.pt', help="Path to labels")
+        parser.add_argument("--PATH_IMG",type=str, default='data/processed/corruptmnist/train_images.pt',help="path to images")
+        parser.add_argument("--PATH_LAB", type=str, default='data/processed/corruptmnist/train_labels.pt', help="Path to labels")
 
         # add any additional argument that you want
         args = parser.parse_args(sys.argv[2:])
@@ -112,6 +112,8 @@ class TrainOREvaluate(object):
         if continue_training is None:
             True
         else:
+            if not os.path.isfile(continue_training):
+                raise ImportError('model dict file is not present')
             state_dict = torch.load(continue_training)
             model.load_state_dict(state_dict)
 
@@ -155,10 +157,10 @@ class TrainOREvaluate(object):
     def evaluate(self):
         print("Evaluating until hitting the ceiling")
         parser = argparse.ArgumentParser(description='Training arguments')
-        parser.add_argument('model_directory', default="../../models/processed/corruptmnist/")
+        parser.add_argument('model_directory', default="models/processed/corruptmnist/")
         parser.add_argument('model_filename', default="checkpoint.pth")
-        parser.add_argument("--PATH_IMG",type=str, default='../../data/processed/corruptmnist/train_images.pt',help="path to images")
-        parser.add_argument("--PATH_LAB", type=str, default='../../data/processed/corruptmnist/train_labels.pt', help="Path to labels")
+        parser.add_argument("--PATH_IMG",type=str, default='data/processed/corruptmnist/train_images.pt',help="path to images")
+        parser.add_argument("--PATH_LAB", type=str, default='data/processed/corruptmnist/train_labels.pt', help="Path to labels")
 
         # add any additional argument that you want
         args = parser.parse_args(sys.argv[2:])
