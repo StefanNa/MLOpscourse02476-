@@ -24,7 +24,5 @@ WORKDIR /app
 RUN dvc config core.no_scm true
 RUN dvc pull
 
-
-
 ENTRYPOINT ["python", "-u", "src/models/train_model.py", "train", "--lr=0.003"]
 
