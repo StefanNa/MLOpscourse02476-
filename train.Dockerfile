@@ -12,12 +12,18 @@ RUN pip install -r requirements.txt --no-cache-dir
 
 COPY req.txt req.txt
 RUN pip install -r req.txt --no-cache-dir
+RUN pip install dvc[gs]
 
+RUN mkdir /app
+COPY src/ /app/src/
+COPY .dvc /app/.dvc
+# COPY .git /app/.git
+COPY data.dvc /app/data.dvc
+RUN mkdir /app/data && mkdir /app/reports
+WORKDIR /app
+RUN dvc config core.no_scm true
+RUN dvc pull
 
-COPY src/ src/
-COPY data/ data/
-COPY reports/ reports/
-WORKDIR /
 
 
 ENTRYPOINT ["python", "-u", "src/models/train_model.py", "train", "--lr=0.003"]

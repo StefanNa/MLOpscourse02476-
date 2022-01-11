@@ -33,53 +33,57 @@ class TrainOREvaluate(object):
         from a single script
     """
     def __init__(self):
-        ##get data
+        #get data
         
-        
-        parser = argparse.ArgumentParser(
-            description="Script for either training or evaluating",
-            usage="python main.py <command>"
-        )
+        try:
+            parser = argparse.ArgumentParser(
+                description="Script for either training or evaluating",
+                usage="python main.py <command>"
+            )
 
-        parser.add_argument(
-            "command", choices=["train", "evaluate"], help="Subcommand to run"
-        )
-        
-        args = parser.parse_args(sys.argv[1:2])
-        if not hasattr(self, args.command):
-            print('Unrecognized command')
+            parser.add_argument(
+                "command", choices=["train", "evaluate"], help="Subcommand to run"
+            )
             
-            parser.print_help()
-            exit(1)
+            args = parser.parse_args(sys.argv[1:2])
+
+            if not hasattr(self, args.command):
+                print('Unrecognized command')
+                
+                parser.print_help()
+                exit(1)
+            
+            
+            # use dispatch pattern to invoke method with same name
+            getattr(self, args.command)()
+        except:
+            self.train()
         
-        
-        # use dispatch pattern to invoke method with same name
-        getattr(self, args.command)()
     
     def train(self):
         print("Training day and night")
         parser = argparse.ArgumentParser(description='Training arguments')
-        parser.add_argument("--c",'-checkpoint',type=str, default='models/processed/corruptmnist/',help="checkpoint directory")
-        parser.add_argument("--cname",'-checkpoint_filename',type=str, default='checkpoint.pth',help="checkpoint filename -- checkpoint.pth")
+        # parser.add_argument("--c",'-checkpoint',type=str, default='models/processed/corruptmnist/',help="checkpoint directory")
+        # parser.add_argument("--cname",'-checkpoint_filename',type=str, default='checkpoint.pth',help="checkpoint filename -- checkpoint.pth")
         parser.add_argument("--lr", type=float, default=0.01, help="learning rate")
         parser.add_argument("--e", type=int, default=10, help="epoch")
-        parser.add_argument("--b", type=_power_of_2, default=64, help="batch size")
-        parser.add_argument("--cont", type=str, default=None, help="Path to model that should be trained again")
-        parser.add_argument("--PATH_IMG",type=str, default='data/processed/corruptmnist/train_images.pt',help="path to images")
-        parser.add_argument("--PATH_LAB", type=str, default='data/processed/corruptmnist/train_labels.pt', help="Path to labels")
+        # parser.add_argument("--b", type=_power_of_2, default=64, help="batch size")
+        # parser.add_argument("--cont", type=str, default=None, help="Path to model that should be trained again")
+        # parser.add_argument("--PATH_IMG",type=str, default='data/processed/corruptmnist/train_images.pt',help="path to images")
+        # parser.add_argument("--PATH_LAB", type=str, default='data/processed/corruptmnist/train_labels.pt', help="Path to labels")
 
-        # add any additional argument that you want
         args = parser.parse_args(sys.argv[2:])
         print(args)
 
-        epochs=args.e
+
+        checkpoint='models/processed/corruptmnist/'#args.c
+        checkpoint_name='checkpoint.pth'#args.cname
         lr=args.lr
-        batchsize=args.b
-        checkpoint=args.c
-        continue_training=args.cont
-        checkpoint_name=args.cname
-        PATH_IMG=args.PATH_IMG
-        PATH_LAB=args.PATH_LAB
+        epochs=args.e
+        batchsize=64#args.b
+        continue_training=None#args.cont
+        PATH_IMG='data/processed/corruptmnist/train_images.pt'#args.PATH_IMG
+        PATH_LAB='data/processed/corruptmnist/train_labels.pt'#args.PATH_LAB
 
         if checkpoint[-1] != '/':
             checkpoint.append('/')
@@ -152,24 +156,26 @@ class TrainOREvaluate(object):
                     accuracy=correct.type(torch.FloatTensor).mean()
                     accuracies.append(accuracy.item()*100)
                 print(f'Accuracy: {np.mean(accuracies)}%')
-        saveplot(train_losses,PATH='../../reports/figures/')
+        if not os.path.isdir('reports/figures/'):
+            os.makedirs('reports/figures/')
+        saveplot(train_losses,PATH='reports/figures/')
         
     def evaluate(self):
-        print("Evaluating until hitting the ceiling")
-        parser = argparse.ArgumentParser(description='Training arguments')
-        parser.add_argument('model_directory', default="models/processed/corruptmnist/")
-        parser.add_argument('model_filename', default="checkpoint.pth")
-        parser.add_argument("--PATH_IMG",type=str, default='data/processed/corruptmnist/train_images.pt',help="path to images")
-        parser.add_argument("--PATH_LAB", type=str, default='data/processed/corruptmnist/train_labels.pt', help="Path to labels")
+        # print("Evaluating until hitting the ceiling")
+        # parser = argparse.ArgumentParser(description='Training arguments')
+        # parser.add_argument('model_directory', default="models/processed/corruptmnist/")
+        # parser.add_argument('model_filename', default="checkpoint.pth")
+        # parser.add_argument("--PATH_IMG",type=str, default='data/processed/corruptmnist/train_images.pt',help="path to images")
+        # parser.add_argument("--PATH_LAB", type=str, default='data/processed/corruptmnist/train_labels.pt', help="Path to labels")
 
-        # add any additional argument that you want
-        args = parser.parse_args(sys.argv[2:])
-        print(args)
+        # # add any additional argument that you want
+        # args = parser.parse_args(sys.argv[2:])
+        # print(args)
         
-        model_directory=args.model_directory
-        model_filename=args.model_filename
-        PATH_IMG=args.PATH_IMG
-        PATH_LAB=args.PATH_LAB
+        model_directory="models/processed/corruptmnist/"#args.model_directory
+        model_filename="checkpoint.pth"#args.model_filename
+        PATH_IMG='data/processed/corruptmnist/train_images.pt'#args.PATH_IMG
+        PATH_LAB='data/processed/corruptmnist/train_labels.pt'#args.PATH_LAB
 
 
         testset=DSF(PATH_IMG,PATH_LAB)

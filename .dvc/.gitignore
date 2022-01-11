@@ -1,7 +1,3 @@
 /config.local
 /tmp
 /cache
-/data/raw
-/data/preprocessed
-/data/interim
-/data/external
